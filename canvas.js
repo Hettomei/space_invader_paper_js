@@ -98,8 +98,8 @@ function Alien(){
 function FireController(ship){
   this.list = [];
   this.ship = ship;
-  this.LEFT = 0;
-  this.RIGHT = 1;
+  this.LEFT = new Point(-10, -10);
+  this.RIGHT = new Point(10, -10);
   this.side = this.LEFT;
 
   this.move_all = function(){
@@ -114,13 +114,8 @@ function FireController(ship){
 
   this.new_fire = function(){
     var fire = new Fire();
-    if(this.side === this.LEFT){
-      fire.position = this.ship.position + new Point(-10, -10);
-      this.side = this.RIGHT;
-    }else{
-      fire.position = this.ship.position + new Point(10, -10);
-      this.side = this.LEFT;
-    }
+    fire.position = this.ship.position + this.side;
+    this.side = this.side === this.RIGHT ? this.LEFT : this.RIGHT;
     this.add(fire);
   }
 }

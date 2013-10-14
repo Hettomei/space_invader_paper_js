@@ -9,7 +9,8 @@ var ship = new Ship();
 var fire_controller = new FireController(ship);
 ship.position = new Point(val.canvas_x / 2, val.canvas_y - 15);
 
-var alien = new Alien();
+var alien_controller = new AlienController();
+alien_controller.generate(20, 3);
 /* event */
 function onMouseMove(event) {
   // Whenever the user moves the mouse, move the path
@@ -45,6 +46,7 @@ function onKeyDown(event) {
 
 function onFrame(event) {
   fire_controller.move_all();
+  alien_controller.move_all();
 }
 /* entity */
 
@@ -121,4 +123,45 @@ function FireController(ship){
     }
     this.add(fire);
   }
+}
+function AlienController(){
+  this.list = [];
+
+  this.UP     = new Point(0, -1);
+  this.BOTTOM = new Point(0, 1);
+  this.LEFT   = new Point(-1, 0);
+  this.RIGHT  = new Point(1, 0);
+
+  this.go_to = this.RIGHT;
+  this.last_position = null; // usefull to know were we are during the move
+
+  this.generate = function(count_row, count_line){
+    for(var i = 0; i< count_row; i++){
+      for(var j = 0; j< count_line; j++){
+        var alien = new Alien();
+        alien.position = new Point(i * 20 + 10, j * 30 + 10);
+        this.list.push(alien);
+      }
+    }
+  }
+  this.move_all = function(){
+
+    this.check_and_change_go_to();
+
+    for(var i = 0; i < this.list.length; i++){
+      this.list[i].position += this.go_to;
+    }
+
+  };
+
+  this.check_and_change_go_to = function(){
+
+    this.last_position = this.list[this.list.length - 1].position.x;
+    if(this.last_position > val.canvas_x - 20){
+      this.go_to = this.LEFT;
+    }else if(this.list[0].position.x < 20){
+      this.go_to = this.RIGHT;
+    }
+  };
+
 }

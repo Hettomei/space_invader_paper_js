@@ -7,7 +7,7 @@ view.viewSize =  new Size(val.canvas_x, val.canvas_y);
 
 var ship = new Ship();
 var fire_controller = new FireController(ship);
-ship.position = new Point(val.canvas_x / 2, val.canvas_y - 15);
+ship.position = new Point(val.canvas_x / 2, val.canvas_y - 20);
 
 var alien_controller = new AlienController();
 alien_controller.generate(20, 3);
@@ -65,7 +65,7 @@ function Fire(){
 function Ship(){
   this.ship = new Path();
 
-  this.ship.strokeColor = 'black';
+  this.ship.strokeColor = 'white';
 
   this.ship.add(new Point(0, 30));
   this.ship.add(new Point(10, 0));
@@ -103,9 +103,17 @@ function FireController(ship){
   this.side = this.LEFT;
 
   this.move_all = function(){
-    for(var i = 0; i < this.list.length; i++){
-      this.list[i].position += new Point(0, -10);
+    this.list.forEach(function(element){
+      element.position.y -= 10;
+    });
+
+    //need to delete fire after exit screen
+    //currently its one by one
+    //but it will be source of bugs
+    if(this.list[0] && this.list[0].position.y < 0){
+      this.list.shift().remove(); //remove from list and from paper scope
     }
+
   };
 
   this.add = function(fire){
@@ -117,8 +125,10 @@ function FireController(ship){
     fire.position = this.ship.position + this.side;
     this.side = this.side === this.RIGHT ? this.LEFT : this.RIGHT;
     this.add(fire);
-  }
+  };
+
 }
+
 function AlienController(){
   this.list = [];
 
@@ -126,6 +136,7 @@ function AlienController(){
   this.BOTTOM = new Point(0, 1);
   this.LEFT   = new Point(-1, 0);
   this.RIGHT  = new Point(1, 0);
+  this.count_move = 0;
 
   this.go_to = this.RIGHT;
   this.last_position = null; // usefull to know were we are during the move
@@ -134,29 +145,36 @@ function AlienController(){
     for(var i = 0; i< count_row; i++){
       for(var j = 0; j< count_line; j++){
         var alien = new Alien();
-        alien.position = new Point(i * 20 + 10, j * 30 + 10);
+        alien.position = new Point(i * 20 + 30, j * 30 + 20);
         this.list.push(alien);
       }
     }
   }
+
   this.move_all = function(){
-
     this.check_and_change_go_to();
-
-    for(var i = 0; i < this.list.length; i++){
-      this.list[i].position += this.go_to;
-    }
-
+    var that = this;
+    this.list.forEach(function(element){
+      element.position += that.go_to;
+    });
   };
 
   this.check_and_change_go_to = function(){
-
-    this.last_position = this.list[this.list.length - 1].position.x;
-    if(this.last_position > val.canvas_x - 20){
-      this.go_to = this.LEFT;
-    }else if(this.list[0].position.x < 20){
-      this.go_to = this.RIGHT;
+    if(this.list[this.list.length - 1].position.x > val.canvas_x - 20){
+      this.go_to = this.BOTTOM;
+      this.count_move++;
+      if(this.count_move > 20){
+        this.go_to = this.LEFT;
+        this.count_move = 0;
+      }
     }
-  };
+    else if(this.list[0].position.x < 20){
+      this.go_to = this.BOTTOM;
+      this.count_move++;
+      if(this.count_move > 20){
+        this.go_to = this.RIGHT;
+        this.count_move = 0;
+    }
+  }};
 
 }

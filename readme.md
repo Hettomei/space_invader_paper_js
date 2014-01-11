@@ -23,6 +23,9 @@ or
 $ echo "do_what_you_want_with_lamp_mamp_xamp_wamp_IIS_node.js...."
 ```
 
+##Demo
+![demo](demo/demo.png)
+
 ##MIT License
 
 Copyright (c) 2013 Timothée Gauthier

@@ -10,7 +10,7 @@ It was created to learn javascript, and a "canvas" lib, like -why not- paper.js 
 this need to be run using a local server - like
 
 ```shell
-python -m SimpleHTTPServer
+python -m http.server 8000 -b 127.0.0.1
 ```
 or
 

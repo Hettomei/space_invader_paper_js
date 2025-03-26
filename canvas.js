@@ -1,6 +1,6 @@
 val = {
-  canvas_x: 640,
-  canvas_y: 480,
+  canvas_x: 1040,
+  canvas_y: 780,
 };
 
 view.viewSize =  new Size(val.canvas_x, val.canvas_y);
